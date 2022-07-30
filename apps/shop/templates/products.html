@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Products page{% endblock %}
+{% load static %}
+{% block content %}
+<section class="container tab-content py-4 py-sm-5">
+    <h2 class="text-center pt-2 pt-sm-0 mb-sm-5">Tea</h2>
+    <div class="row pt-3 pt-sm-0">
+        <!-- Item-->
+        {% for product in products %}
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-grid-gutter">
+            <div class="card product-card border pb-2"><a href="{% url 'product' pk=product.id %}">
+                    <img class="card-img-top" src={{product.image.url}} alt="Tea">
+                    <div class="card-body pt-1 pb-2">
+                        <h3 class="product-title fs-md"><a
+                                href="{% url 'product' pk=product.id %}">{{product.title}}</a></h3>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="product-price"><span class="text-accent">{{product.price}}</span></div>
+                            <form action="{% url 'add_to_basket' %}" method="post" name="add_to_basket">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <input class="btn btn-primary btn-sm" type="submit" value="+">
+                                <i class="ci-cart fs-base ms-1"></i>
+                            </form>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#product_{{ product.id }}">
+                                    More
+                                </button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="modal fade" id="product_{{ product.id }}" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">{{product.title}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+                    <div class="modal-dialog modal-dialog-centered">
+                        {{product.description}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+</section>
+<script src="{% static 'js/scripts.js' %}"></script>
+{% endblock %}

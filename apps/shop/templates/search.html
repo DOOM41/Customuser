@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+<form method="post">
+        {% csrf_token %}{{form}}
+        <button type="submit" class="btn btn-success">Поиск</button>
+</form>
+{% if products %}
+        {% for product in products %}
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-grid-gutter">
+                        <div class="card product-card border pb-2"><a class="d-block" href="../product/{{product.id}}"
+                                        data-bs-toggle="modal"><img class="card-img-top" src={{product.image.url}} alt="Tea"></a>
+                                <div class="card-body pt-1 pb-2">
+                                        <h3 class="product-title fs-md"><a href="../product/{{product.id}}"
+                                                        data-bs-toggle="modal">{{product.title}}</a></h3>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                                <div class="product-price"><span class="text-accent">{{product.price}}</span></div>
+                                                <button class="btn btn-primary btn-sm" type="button">+<i
+                                                                class="ci-cart fs-base ms-1"></i></button>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        {% endfor %}
+{% else %}
+<div>
+        Ничего не найдено(
+</div>
+{% endif %}
+{% endblock %}

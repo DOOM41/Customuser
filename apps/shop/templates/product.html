@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}{{product.title}}{% endblock %}
+{% block my_style %}
+<style>
+    img {
+        width: 400px;
+        height: 400px;
+        margin: auto;
+        padding: auto;
+        display: flex;
+        border-radius: 20px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <!-- Product gallery-->
+    <div class="col-lg-7 pe-lg-0 pt-lg-4">
+        <div class="product-gallery-preview-item active" id="first"><img class="image" src={{product.image.url}}>
+        </div>
+    </div>
+    <!-- Product details-->
+    <div class="col-lg-5 pt-4 pt-lg-0">
+        <div class="product-details ms-auto pb-3">
+            <div class="mb-3">
+                <p class="h3 fw-normal text-accent me-1">{{product.title}}</p>
+                <span class="h3 fw-normal text-accent me-1">{{product.price}}</span>
+            </div>
+            <form action="{% url 'add_to_basket' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                <input class="btn btn-primary btn-shadow d-block w-100" type="submit" value="Add to Cart">
+                <i class="ci-cart fs-lg me-2"></i>
+            </form>
+            <!-- Product panels-->
+            <div class="accordion mb-4" id="productPanels">
+                <div class="accordion-item">
+                    <h3 class="accordion-header"><a class="accordion-button" href="#productInfo" role="button"
+                            data-bs-toggle="collapse" aria-expanded="true" aria-controls="productInfo"><i
+                                class="ci-announcement text-muted fs-lg align-middle mt-n1 me-2"></i>Product
+                            info</a></h3>
+                    <div class="accordion-collapse collapse show" id="productInfo" data-bs-parent="#productPanels">
+                        <div class="accordion-body">
+                            <h6 class="fs-sm mb-2">Discription</h6>
+                            <span class="fs-sm ps-4">
+                                {{product.description}}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr class="hr3">
+<h1 class="h1">Reviews</h1>
+{% if user.is_authenticated %}
+    <form class="w-100" action="{% url 'add_comment' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <textarea name="comment" data-autoresize="" class="form-control pe-4 bg-light" rows="1" placeholder="Add a comment..."></textarea>
+        <input class="btn btn-primary btn-sm" type="submit" value="Send">
+    </form>
+{% endif %}
+<div class="d-flex flex-column d-grid gap-3">
+    {% for comment in comments %}
+    <div class="mt-1">
+        <div class="bg-light rounded-start-top-0 p-3 rounded">
+            <div class="d-flex justify-content-between">
+                <h6 class="mb-1"> <a href="#!"> {{comment.user}} </a></h6>
+                <small class="ms-2">{{comment.created_date}}</small>
+            </div>
+            <p class="small mb-0">{{comment.text}}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<hr class="hr4">
+{% endblock %}
